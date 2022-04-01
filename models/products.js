@@ -45,6 +45,10 @@ const getProductById = async (idProduct) => {
   return id;
 };
 
+const deleteId = async (id) => {
+  await connection.execute('DELETE FROM products WHERE id = ?', [id]);
+};
+
 module.exports = {
   getAll,
   getById,
@@ -52,4 +56,5 @@ module.exports = {
   getProductName,
   update,
   getProductById,
+  deleteId,
 };

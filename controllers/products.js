@@ -51,9 +51,24 @@ const update = async (req, res) => {
   }
 };
 
+const deleteId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const verify = await modelProducts.getProductById(id);
+    if (verify.length === 0) return res.status(404).json({ message: 'Product not found' });
+    
+    await modelProducts.deleteId(id);
+    return res.status(204).end();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Erro no Servidor' });
+  }
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   update,
+  deleteId,
 };

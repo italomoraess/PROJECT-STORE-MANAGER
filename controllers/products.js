@@ -22,7 +22,23 @@ const getById = async (req, res) => {
   }
 };
 
+const create = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const verify = await modelProducts.getProductName(name);
+    console.log(verify);
+    if (verify.length !== 0) return res.status(409).json({ message: 'Product already exists' });
+
+    const product = await serviceProducts.create(req.body);
+    return res.status(201).json(product);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Erro no Servidor' });
+  }
+};
+
 module.exports = {
   getAll,
   getById,
+  create,
 };

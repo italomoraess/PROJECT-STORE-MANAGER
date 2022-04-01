@@ -28,9 +28,28 @@ const getProductName = async (nameProduct) => {
   return name;
 };
 
+const update = async ({ id, name, quantity }) => {
+  await connection.execute('UPDATE products SET name = ?, quantity = ? WHERE id = ?',
+      [name, quantity, id]);
+  return {
+      id,
+      name,
+      quantity,
+  };
+};
+
+const getProductById = async (idProduct) => {
+  const [id] = await connection.execute('SELECT * FROM products WHERE id = ?', 
+  [idProduct]);
+
+  return id;
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   getProductName,
+  update,
+  getProductById,
 };

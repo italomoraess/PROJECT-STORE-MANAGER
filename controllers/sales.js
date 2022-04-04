@@ -35,10 +35,10 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-    
-    const product = await serviceSales.update(id, ...req.body);
 
-    return res.status(200).json(product);
+    const sale = await serviceSales.update(id, ...req.body);
+
+    return res.status(200).json(sale);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Erro no Servidor' });

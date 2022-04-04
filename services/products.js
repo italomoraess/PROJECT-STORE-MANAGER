@@ -20,9 +20,9 @@ const create = async (product) => {
   }
 };
 
-const update = async (customer) => {
+const update = async (product) => {
   try {
-    const { id, name, quantity } = customer;
+    const { id, name, quantity } = product;
 
     const updatedProduct = await modelProducts.update({ id, name, quantity });
 

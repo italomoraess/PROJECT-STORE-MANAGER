@@ -20,7 +20,18 @@ const create = async (sale) => {
   }
 };
 
+const update = async (id, itemUpdated) => {
+  try {
+    const updatedSale = await modelSales.update(id, itemUpdated);
+    return updatedSale;
+  } catch (error) {
+    console.log(error);
+    return { message: 'Erro no Servidor' };
+  }
+};
+
 module.exports = {
   getById,
   create,
+  update,
 };

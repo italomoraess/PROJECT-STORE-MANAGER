@@ -1,94 +1,70 @@
 const { expect } = require('chai');
-const sinon = require('sinon');
+const { stub, match } = require('sinon');
 
-const controllerProduct = require('../../../controllers/products');
-const serviceProduct = require('../../../services/products');
+const modelProducts = require('../../../models/products');
+const serviceProducts = require('../../../services/products');
+const controllerProducts = require('../../../controllers/products');
 
-describe('Product Controller', () => {
-  const productFake = {
-    name: 'Produto x',
-    quantity: 10,
-  };
-  
-  const oneProduct = [
-    {
-      id: 1,
-      name: "Martelo de Thor",
-      quantity: 10,
-    },
-  ];
+describe('Retorna Todos os produtos', () => {
+  describe('Quando retornado com sucesso', () => {
+    const testProduct = [
+      {
+        "id": 1,
+        "name": "Martelo de Thor",
+        "quantity": 10
+      },
+      {
+        "id": 2,
+        "name": "Traje de encolhimento",
+        "quantity": 20
+      }
+    ];
 
-  const allProducts = [
-    {
-      id: 1,
-      name: "Produto x",
-      quantity: 10,
-    },
-    {
-      id: 2,
-      name: "Produto y",
-      quantity: 20,
-    },
-    {
-      id: 3,
-      name: "Produto z",
-      quantity: 30,
-    },
-  ];
+    const res = {};
+    const req = {};
 
-  const res = {};
-  const req = {};
-
-  before(() => {
-    res.status = sinon.stub().returns(res);
-    res.json = sinon.stub().returns();
-  });
-
-  describe('Se criado com sucesso', () => {
     before(() => {
-      sinon.stub(serviceProduct, 'create').resolves(productFake);
-      req.body = productFake;
+      stub(modelProducts, 'getAll').resolves(testProduct);
+      res.status = stub().returns(res);
+      res.json = stub().returns();
     });
     after(() => {
-      serviceProduct.create.restore();
-      req.body = undefined;
+      modelProducts.getAll.restore();
     });
-
-    it('valida criação de produto', async () => {
-      await controllerProduct.create(req, res);
-
-      expect(res.status.calledWith(201)).to.be.equals(true);
-      expect(res.json.calledWith(productFake)).to.be.equals(true);
+    it('Verifica status', async () => {
+      await controllerProducts.getAll(req, res);
+      expect(res.status.calledWith(200)).to.be.equal(true);
     });
-  });
-
-  describe('verifica busca por todos os produtos', () => {
-    before(() => {
-      sinon.stub(serviceProduct, 'getAll').resolves(allProducts);
-    });
-    after(() => {
-      serviceProduct.getAll.restore();
-    });
-    it('retorna todos os produtos', async () => {
-      await controllerProduct.getAll(req, res);
-
-      expect(res.status.calledWith(201)).to.be.equal(true);
-      expect(res.json.calledWith(allProducts)).to.be.equal(true);
+    it('Verifica Json', async () => {
+      await controllerProducts.getAll(req, res);
+      expect(res.json.calledWith(match.array)).to.be.equal(true);
     });
   });
+});
 
-  describe('verifica busca por id o produtos', () => {
+describe('Retorna um unico produto produto', () => {
+  describe('Quando retornado com sucesso', () => {
+    const testProduct = {
+      "id": 1,
+      "name": "Martelo de Thor",
+      "quantity": 10
+    };
+
+    const res = {};
+    const req = {};
+
     before(() => {
-      sinon.stub(serviceProduct, 'getById').resolves(allProducts);
+      stub(serviceProducts, 'getById').resolves(testProduct);
+      res.status = stub().returns(res);
+      res.json = stub().returns();
+      req.params = stub().returns();
     });
     after(() => {
-      serviceProduct.getById.restore();
+      serviceProducts.getById.restore();
     });
-    it('retorna um unico produto', async () => {
-      await controllerProduct.getById(req, res);
-
-      expect(res.status.calledWith(201)).to.be.equal(true);
-      expect(res.json.calledWith(allProducts)).to.be.equal(true);
+    it('Verifica status', async () => {
+      await controllerProducts.getById(req, res);
+      expect(res.status.calledWith(200)).to.be.equal(true);
     });
   });
 });

@@ -1,50 +1,53 @@
 const { expect } = require('chai');
-const sinon = require('sinon');
+const { stub } = require('sinon');
 
-const modelProducts = require('../../../models/products');
+const modelProducts = require('../../../models/products')
 const serviceProducts = require('../../../services/products');
 
-describe('Sales Model', () => {
+describe('Retorna um unico produto produto', () => {
+  describe('Quando retornado com sucesso', () => {
+    const fakeProduct = {
+        id: 1,
+        name: 'produdo x',
+        quantity: 10
+    };
 
-  const productsFake = [
-    {
+    const testProduct = {
       id: 1,
-      name: 'produto x',
-      quantity: 30,
-    },
-    {
-      id: 2,
-      name: 'produto y',
-      quantity: 40,
-    },
-  ];
-  const addProductsFake = [{ id: 1, name: "produto", quantity: 10 }]
+      name: 'produdo x',
+      quantity: 10
+    };
 
-  describe('Requisição GET por ID', () => {
     before(() => {
-      sinon.stub(modelProducts, 'getByID').resolves([[productsFake[0]]]);
+      stub(modelProducts, 'getById').resolves([fakeProduct]);
     });
     after(() => {
-      connection.execute.restore();
+      modelProducts.getById.restore();
     });
-
-    it('Se possui o ID igual a 1', async () => {
+    it('Verifica se as propriedades estao inclusas', async () => {
       const result = await serviceProducts.getById(1);
-      expect(result.id).to.be.equal(1);
+      expect(result).to.deep.includes(testProduct);
     });
   });
+});
 
-  describe('Requisição POST', () => {
+describe('Inseri um novo produto', () => {
+  describe('Quando retornado com sucesso', () => {
+    const fakeProduct = {
+        id: 1,
+        name: 'produdo x',
+        quantity: 10
+    };
+
     before(() => {
-      sinon.stub(modelProducts, 'create').resolves([{ insertId: 1}]);
+      stub(modelProducts, 'create').resolves([fakeProduct]);
     });
     after(() => {
-      connection.execute.restore();
+      modelProducts.create.restore();
     });
-
-    it('Se possuir o insertId igual a 1', async () => {
-      const result = await serviceProducts.create(addProductsFake);
-      expect(result.insertId).to.be.equal(1);
+    it('Verifica se retorna id criado', async () => {
+      const [result] = await serviceProducts.create(fakeProduct);
+      expect(result.id).to.be.equal(1);
     });
   });
 });

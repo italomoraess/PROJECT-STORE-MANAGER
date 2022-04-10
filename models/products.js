@@ -6,7 +6,7 @@ const getAll = async () => {
 };
 
 const getById = async (id) => {
-  const [product] = await connection.execute('SELECT * FROM products WHERE id = ? ', [id]);
+  const [product] = await connection.execute('SELECT * FROM products WHERE id = ?', [id]);
   return product[0];
 };
 
@@ -29,7 +29,7 @@ const getProductName = async (nameProduct) => {
 };
 
 const update = async ({ id, name, quantity }) => {
-  await connection.execute('UPDATE products SET name = ?, quantity = ? WHERE id = ?',
+  await connection.execute('UPDATE products SET  name = ?, quantity = ? WHERE id = ?',
       [name, quantity, id]);
   return {
       id,

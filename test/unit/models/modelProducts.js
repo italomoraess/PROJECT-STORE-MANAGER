@@ -1,65 +1,68 @@
 const { expect } = require('chai');
-const sinon = require('sinon');
+const { stub } = require('sinon');
 
 const connection = require('../../../models/connection');
 const modelProducts = require('../../../models/products');
 
-describe('Products Model', () => {
+describe('Retorna todos os produtos', () => {
+  describe('Quando retornado com sucesso', () => {
 
-  const productsFake = [
-    {
-      id: 1,
-      name: 'produto x',
-      quantity: 30,
-    },
-    {
-      id: 2,
-      name: 'produto y',
-      quantity: 40,
-    },
-  ];
-  const addProductsFake =  [{ id: 1, name: "produto", quantity: 10 }]
+    const fakeProducts = [
+      {
+        id: 1,
+        name: 'produdo x',
+        quantity: 10
+      },
+      {
+        id: 2,
+        name: 'produdo y',
+        quantity: 10
+      },
+      {
+        id: 3,
+        name: 'produdo z',
+        quantity: 10
+      }
+    ];
 
-  describe('Requisição GET', () => {
     before(() => {
-      sinon.stub(connection, 'execute').resolves(productsFake);
+      stub(connection, 'execute').resolves([fakeProducts]);
     });
     after(() => {
       connection.execute.restore();
     });
-
-    it('Se retorna um array', async () => {
+    it('Retorna um objeto', async () => {
       const result = await modelProducts.getAll();
       expect(result).to.be.a('array');
     });
   });
+});
 
-  describe('Requisição GET por ID', () => {
+describe('Retorna um unico produto produto', () => {
+  describe('Quando retornado com sucesso', () => {
+    const fakeProduct = [
+      {
+        id: 1,
+        name: 'produdo x',
+        quantity: 10
+      }
+    ];
+
+    const testProduct = {
+      id: 1,
+      name: 'produdo x',
+      quantity: 10
+    };
+
     before(() => {
-      sinon.stub(connection, 'execute').resolves([[productsFake[0]]]);
+      stub(connection, 'execute').resolves([fakeProduct]);
     });
     after(() => {
       connection.execute.restore();
     });
-
-    it('Se possui o ID igual a 1', async () => {
+    it('Verifica se as propriedades estao inclusas', async () => {
       const result = await modelProducts.getById(1);
-      expect(result.id).to.be.equal(1);
-    });
-  });
-
-  describe('Requisição POST', () => {
-    before(() => {
-      sinon.stub(connection, 'execute').resolves([{ insertId: 1}]);
-    });
-    after(() => {
-      connection.execute.restore();
-    });
-
-    it('Se possuir o insertId igual a 1', async () => {
-      const result = await modelProducts.create(addProductsFake);
-      expect(result.insertId).to.be.equal(1);
+      expect(result).to.deep.includes(testProduct);
     });
   });
 });
-

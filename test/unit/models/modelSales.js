@@ -1,53 +1,64 @@
 const { expect } = require('chai');
-const sinon = require('sinon');
+const { stub } = require('sinon');
 
 const connection = require('../../../models/connection');
 const modelSales = require('../../../models/sales');
 
-describe('Sales Model', () => {
+describe('Retorna todos os produtos', () => {
+  describe('Quando retornado com sucesso', () => {
 
-  const salesFake = [
-    {
-      saleId: 1,
-      date: '2021-09-09T04:54:29.000Z',
-      productId: 1,
-      quantity: 2,
-    },
-    {
-      saleId: 2,
-      date: '2021-09-09T04:54:54.000Z',
-      productId: 2,
-      quantity: 2,
-    },
-  ];
-  const addProductsFake =  [{ id: 1, name: "produto", quantity: 10 }]
+    const fakeSales = [
+      {
+        "saleId": 1,
+        "date": "2022-04-09T21:24:35.000Z",
+        "productId": 1,
+        "quantity": 5
+      },
+      {
+        "saleId": 1,
+        "date": "2022-04-09T21:24:35.000Z",
+        "productId": 2,
+        "quantity": 10
+      },
+      {
+        "saleId": 2,
+        "date": "2022-04-09T21:24:35.000Z",
+        "productId": 3,
+        "quantity": 15
+      }
+    ];
 
-  describe('Requisição GET', () => {
     before(() => {
-      sinon.stub(connection, 'execute').resolves(salesFake);
+      stub(connection, 'execute').resolves([fakeSales]);
     });
     after(() => {
       connection.execute.restore();
     });
-
-    it('Se retorna um array', async () => {
+    it('Retorna um objeto', async () => {
       const result = await modelSales.getAll();
       expect(result).to.be.a('array');
     });
   });
+});
 
-  describe('Requisição GET por ID', () => {
+describe('Retorna um unico produto produto', () => {
+  describe('Quando retornado com sucesso', () => {
+    const fakeSale = [
+      {
+        "date": "2022-04-09T21:24:35.000Z",
+        "productId": 3,
+        "quantity": 15
+      }
+    ];
     before(() => {
-      sinon.stub(connection, 'execute').resolves([[salesFake[0]]]);
+      stub(connection, 'execute').resolves([fakeSale]);
     });
     after(() => {
       connection.execute.restore();
     });
-
-    it('Se possui o ID igual a 1', async () => {
-      const result = await modelSales.getById(1);
-      expect(result.id).to.be.equal(1);
+    it('Verfica o tamanho do array', async () => {
+      const result = await modelSales.getById(2);
+      expect(result).to.not.have.length(0);
     });
   });
 });
-
